@@ -13,6 +13,7 @@
     :root{
       --bg:#0b1020;
       --accent:#ffd166;
+      --accent2:#ffba08;
       --glass: rgba(255,255,255,0.06);
       --max-width:1200px;
       --radius:16px;
@@ -30,50 +31,106 @@
       background:var(--bg);
       color:#fff;
       -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
     }
+
+    /* Animated glow behind */
+    body::before {
+      content:"";
+      position:fixed; inset:0;
+      background:radial-gradient(circle at 50% 20%, rgba(255,209,102,0.15), transparent 70%);
+      z-index:-3;
+      animation:pulse 6s infinite alternate;
+    }
+    @keyframes pulse {
+      from {opacity:0.6; transform:scale(1);}
+      to   {opacity:0.9; transform:scale(1.05);}
+    }
+
     .bg {
-      position:fixed; inset:0; z-index:-2;
+      position:fixed; inset:0; z-index:-4;
       background-image: url('/poster.jpg');
       background-size:cover;
       background-position:center center;
       filter:brightness(0.9) saturate(0.95);
     }
-    .overlay{position:fixed; inset:0; background:linear-gradient(180deg, rgba(8,10,20,0.6), rgba(8,10,20,0.75)); z-index:-1}
+    .overlay{
+      position:fixed; inset:0;
+      background:linear-gradient(180deg, rgba(8,10,20,0.6), rgba(8,10,20,0.85));
+      z-index:-2;
+    }
+    .overlay::after {
+      content:"";
+      position:absolute; inset:0;
+      background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="2" cy="2" r="2" fill="white" opacity="0.15"/></svg>') repeat;
+      animation: drift 90s linear infinite;
+      opacity:0.4;
+    }
+    @keyframes drift { from{background-position:0 0;} to{background-position:2000px 2000px;} }
 
     .container{
       width:100%; max-width:var(--max-width); padding:2rem; display:flex; gap:2rem; align-items:center; justify-content:center;
     }
 
     .card{
-      width:100%; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius:var(--radius); padding:var(--card-pad); backdrop-filter: blur(6px);
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6); display:flex; gap:1rem; align-items:center;
+      width:100%; 
+      background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-radius:var(--radius); 
+      padding:var(--card-pad); 
+      backdrop-filter: blur(12px);
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6); 
+      display:flex; gap:1rem; align-items:center;
       flex-wrap:wrap; align-content:center;
+      animation: fadeIn 1.5s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(20px);}
+      to {opacity:1; transform:translateY(0);}
     }
 
     .left{flex:1 1 380px; min-width:260px}
     .right{flex:0 0 360px; min-width:240px}
 
-    h1{margin:0 0 .35rem 0; font-size:clamp(1.25rem,2.6vw,2rem); letter-spacing:0.6px}
+    h1{
+      margin:0 0 .35rem 0; 
+      font-size:clamp(1.5rem,2.6vw,2.2rem); 
+      letter-spacing:0.6px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
     h2.sub{margin:.25rem 0 1rem 0; font-size:1.1rem; font-weight:400; opacity:0.9}
     p.lead{margin:0 0 1rem 0; opacity:0.95}
 
-    .btns{display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap}
-    .btn{display:inline-flex; align-items:center; gap:.6rem; padding:.6rem .9rem; border-radius:9px; border:0; cursor:pointer; font-weight:600; text-decoration:none}
-    .btn-primary{background:linear-gradient(90deg,#ffba08,#ffd166); color:#062;}
-    .btn-secondary{background:rgba(255,255,255,0.06); color:#fff}
+    .btns{display:flex; gap:.6rem; margin-top:1.2rem; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; gap:.6rem; 
+      padding:.7rem 1.1rem; border-radius:9px; border:0; cursor:pointer; 
+      font-weight:600; text-decoration:none; font-size:1rem;
+      transition:all .25s ease;
+    }
+    .btn-primary{background:linear-gradient(90deg,var(--accent2),var(--accent)); color:#062;}
+    .btn-secondary{background:rgba(255,255,255,0.08); color:#fff}
     .btn-whatsapp{background:#25D366; color:#fff}
 
-    .preview{width:100%; height:100%; display:flex; align-items:center; justify-content:center}
-    .preview img{max-width:100%; border-radius:10px; box-shadow: 0 8px 25px rgba(2,6,23,0.6);}
+    .btn:hover{
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:0 4px 20px rgba(255,209,102,0.25);
+    }
 
-    footer{width:100%; text-align:center; margin-top:1rem; font-size:.95rem; opacity:0.95; line-height:1.5}
+    .preview{width:100%; height:100%; display:flex; align-items:center; justify-content:center}
+    .preview img{max-width:100%; border-radius:12px; box-shadow: 0 8px 25px rgba(2,6,23,0.6); transition: transform .4s ease;}
+    .preview img:hover{transform:scale(1.04)}
+
+    footer{width:100%; text-align:center; margin-top:1.4rem; font-size:.95rem; opacity:0.95; line-height:1.5}
 
     @media(max-width:880px){
       body{align-items:flex-start; padding-top:1rem}
       .container{padding:1.25rem; margin-top:1rem}
       .right{order: -1;}
       .card{padding:1rem}
+      .btn{width:100%; justify-content:center}
     }
   </style>
 </head>
@@ -88,9 +145,9 @@
         <h2 class="sub">Led by His Grace Deena Bandhu das &amp; Senior Devotees</h2>
 
         <div class="btns">
-          <a class="btn btn-primary" href="/poster.jpg" download="Vrajakatha-poster.jpg" title="Download poster">Download Poster</a>
-          <a class="btn btn-secondary" href="/poster.jpg" target="_blank" rel="noopener" title="Open poster in new tab">View Full Image</a>
-          <a class="btn btn-whatsapp" href="https://wa.me/917895200703" target="_blank" rel="noopener" title="Chat on WhatsApp">Contact on WhatsApp</a>
+          <a class="btn btn-primary" href="/poster.jpg" download="Vrajakatha-poster.jpg" title="Download poster">⬇️ Download Poster</a>
+          <a class="btn btn-secondary" href="/poster.jpg" target="_blank" rel="noopener" title="Open poster in new tab">🖼️ View Full Image</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/917895200703" target="_blank" rel="noopener" title="Chat on WhatsApp">📲 Contact on WhatsApp</a>
         </div>
 
         <footer>
@@ -101,11 +158,12 @@
 
       <aside class="right" aria-hidden="true">
         <div class="preview">
-          <a href="/poster.jpg" target="_blank" rel="noopener"><img src="/poster.jpg" alt="Vrajakatha Poster" loading="eager"></a>
+          <a href="/poster.jpg" target="_blank" rel="noopener">
+            <img src="/poster.jpg" alt="Vrajakatha Poster" loading="lazy">
+          </a>
         </div>
       </aside>
     </section>
   </main>
-
 </body>
 </html>
