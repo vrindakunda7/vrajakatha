@@ -33,9 +33,24 @@
       overflow-x:hidden;
     }
 
+    /* Animated glow */
+    body::before {
+      content:"";
+      position:fixed; inset:0;
+      background:radial-gradient(circle at 50% 20%, rgba(255,209,102,0.15), transparent 70%);
+      z-index:-3;
+      animation:pulse 6s infinite alternate;
+    }
+    @keyframes pulse {
+      from {opacity:0.6; transform:scale(1);}
+      to   {opacity:0.9; transform:scale(1.05);}
+    }
+
     .bg {
       position:fixed; inset:0; z-index:-4;
-      background:url('/poster.jpg') center/cover no-repeat, #0b1020;
+      background-image: url('/poster.jpg');
+      background-size:cover;
+      background-position:center center;
       filter:brightness(0.9) saturate(0.95);
     }
     .overlay{
@@ -43,6 +58,14 @@
       background:linear-gradient(180deg, rgba(8,10,20,0.6), rgba(8,10,20,0.85));
       z-index:-2;
     }
+    .overlay::after {
+      content:"";
+      position:absolute; inset:0;
+      background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="2" cy="2" r="2" fill="white" opacity="0.15"/></svg>') repeat;
+      animation: drift 90s linear infinite;
+      opacity:0.4;
+    }
+    @keyframes drift { from{background-position:0 0;} to{background-position:2000px 2000px;} }
 
     .container{
       width:100%; max-width:var(--max-width); padding:2rem; display:flex; gap:2rem; align-items:center; justify-content:center;
@@ -56,15 +79,22 @@
       backdrop-filter: blur(12px);
       border:1px solid rgba(255,255,255,0.1);
       box-shadow: 0 8px 30px rgba(2,6,23,0.6); 
-      display:flex; flex-wrap:wrap; gap:1rem;
+      display:flex; gap:1rem; align-items:center;
+      flex-wrap:wrap; align-content:center;
+      animation: fadeIn 1.5s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(20px);}
+      to {opacity:1; transform:translateY(0);}
     }
 
-    .left{flex:1 1 380px; min-width:260px; display:flex; flex-direction:column; justify-content:space-between}
+    .left{flex:1 1 380px; min-width:260px}
     .right{flex:0 0 360px; min-width:240px}
 
     h1{
       margin:0 0 .35rem 0; 
       font-size:clamp(1.5rem,2.6vw,2.2rem); 
+      letter-spacing:0.6px;
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
@@ -78,32 +108,34 @@
       font-weight:600; text-decoration:none; font-size:1rem;
       transition:all .25s ease;
     }
-    .btn svg{flex-shrink:0;}
+    .btn svg{
+      flex-shrink:0;
+      transition:fill .25s ease, transform .25s ease;
+    }
     .btn-primary{background:linear-gradient(90deg,var(--accent2),var(--accent)); color:#062;}
     .btn-secondary{background:rgba(255,255,255,0.08); color:#fff}
-    .btn-whatsapp{background:#128C7E; color:#fff}
-    .btn-whatsapp svg{fill:#fff;}
+    .btn-whatsapp{background:#25D366; color:#fff}
+    .btn-whatsapp svg{fill:#fff !important;}
 
-    .btn:hover{transform:translateY(-2px) scale(1.03);}
+    .btn:hover{
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:0 4px 20px rgba(255,209,102,0.25);
+    }
+    .btn-primary:hover svg,
+    .btn-secondary:hover svg {
+      transform:scale(1.15);
+      filter:drop-shadow(0 0 6px var(--accent));
+    }
+    .btn-whatsapp:hover {
+      background:#20bd5a;
+      box-shadow:0 4px 20px rgba(37,211,102,0.45);
+    }
 
-    .preview{width:100%; display:flex; align-items:center; justify-content:center}
-    .preview img{max-width:100%; border-radius:12px; box-shadow: 0 8px 25px rgba(2,6,23,0.6);}
+    .preview{width:100%; height:100%; display:flex; align-items:center; justify-content:center}
+    .preview img{max-width:100%; border-radius:12px; box-shadow: 0 8px 25px rgba(2,6,23,0.6); transition: transform .4s ease;}
+    .preview img:hover{transform:scale(1.04)}
 
-    footer{
-      width:100%; text-align:center; margin-top:1.6rem; font-size:.95rem; line-height:1.5;
-    }
-    footer .divider {
-      margin:1rem auto;
-      height:1px;
-      width:60%;
-      background:linear-gradient(90deg, transparent, rgba(255,209,102,0.5), transparent);
-    }
-    footer .tribute {
-      font-size:.9rem;
-      opacity:0.85;
-      color:#ffd166;
-      font-style:italic;
-    }
+    footer{width:100%; text-align:center; margin-top:1.4rem; font-size:.95rem; opacity:0.95; line-height:1.5}
 
     @media(max-width:880px){
       body{align-items:flex-start; padding-top:1rem}
@@ -121,42 +153,48 @@
   <main class="container">
     <section class="card" role="region" aria-labelledby="title">
       <div class="left">
-        <div>
-          <h1 id="title">Karttika Vraja Parikrama (2025) — Schedule</h1>
-          <h2 class="sub">Led by His Grace Deena Bandhu das &amp; Senior Devotees</h2>
+        <h1 id="title">Karttika Vraja Parikrama (2025) — Schedule</h1>
+        <h2 class="sub">Led by His Grace Deena Bandhu das &amp; Senior Devotees</h2>
 
-          <div class="btns">
-            <a class="btn btn-primary" href="/poster.jpg" download="Vrajakatha-poster.jpg">
-              ⬇️ Download Poster
-            </a>
-            <a class="btn btn-secondary" href="/poster.jpg" target="_blank" rel="noopener">
-              👁 View Full Image
-            </a>
-            <a class="btn btn-whatsapp" href="https://wa.me/917895200703" target="_blank" rel="noopener">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32">
-                <path d="M16.027 3.004c-7.334 0-13.305 5.97-13.305 13.305 0 2.351.613 4.64 1.78 6.662l-1.906 6.961 7.109-1.863c1.945 1.064 4.141 1.625 6.324 1.625h.001c7.334 0 13.305-5.971 13.305-13.305s-5.971-13.305-13.305-13.305zm0 24.16c-1.896 0-3.754-.508-5.375-1.469l-.387-.23-4.219 1.107 1.125-4.105-.254-.422c-1.066-1.775-1.629-3.816-1.629-5.922 0-6.277 5.109-11.387 11.387-11.387s11.387 5.109 11.387 11.387-5.11 11.387-11.387 11.387z"/>
-              </svg>
-              Contact on WhatsApp
-            </a>
-          </div>
+        <div class="btns">
+          <!-- Download Poster -->
+          <a class="btn btn-primary" href="/poster.jpg" download="Vrajakatha-poster.jpg" title="Download poster">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M.5 9.9a.5.5 0 0 1 .5.5V13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10.4a.5.5 0 0 1 1 0V13a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V10.4a.5.5 0 0 1 .5-.5z"/>
+              <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3.5-3.5a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L4.854 7.646a.5.5 0 1 0-.708.708l3.5 3.5z"/>
+            </svg>
+            Download Poster
+          </a>
+
+          <!-- View Full Image -->
+          <a class="btn btn-secondary" href="/poster.jpg" target="_blank" rel="noopener" title="Open poster in new tab">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8z"/>
+              <path d="M8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+            </svg>
+            View Full Image
+          </a>
+
+          <!-- WhatsApp Contact -->
+          <a class="btn btn-whatsapp" href="https://wa.me/917895200703" target="_blank" rel="noopener" title="Chat on WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M16.027 3.004c-7.334 0-13.305 5.97-13.305 13.305 0 2.351.613 4.64 1.78 6.662l-1.906 6.961 7.109-1.863c1.945 1.064 4.141 1.625 6.324 1.625h.001c7.334 0 13.305-5.971 13.305-13.305s-5.971-13.305-13.305-13.305zm0 24.16c-1.896 0-3.754-.508-5.375-1.469l-.387-.23-4.219 1.107 1.125-4.105-.254-.422c-1.066-1.775-1.629-3.816-1.629-5.922 0-6.277 5.109-11.387 11.387-11.387s11.387 5.109 11.387 11.387-5.11 11.387-11.387 11.387zm6.223-8.48c-.34-.17-2.004-.988-2.313-1.102-.309-.113-.535-.17-.762.17s-.875 1.102-1.074 1.332c-.199.227-.398.256-.738.085-.34-.17-1.436-.529-2.734-1.685-1.01-.9-1.691-2.004-1.891-2.344s-.02-.512.15-.682c.154-.154.34-.398.51-.596.17-.199.227-.34.34-.57.113-.227.057-.426-.028-.596-.085-.17-.762-1.84-1.043-2.52-.275-.66-.555-.57-.762-.58l-.65-.012c-.227 0-.596.085-.91.426s-1.195 1.168-1.195 2.85 1.223 3.301 1.391 3.527c.17.227 2.406 3.672 5.836 5.15.816.352 1.453.561 1.951.719.82.26 1.566.223 2.156.135.66-.1 2.004-.82 2.289-1.613.283-.793.283-1.473.197-1.613-.084-.14-.309-.227-.65-.397z"/>
+            </svg>
+            Contact on WhatsApp
+          </a>
         </div>
 
         <footer>
-          <div>
-            Hare Krishna Hare Krishna Krishna Krishna Hare Hare<br>
-            Hare Rama Hare Rama Rama Rama Hare Hare
-          </div>
-          <div class="divider"></div>
-          <div class="tribute">
-            His Divine Grace A.C. Bhaktivedanta Swami Prabhupāda,<br>
-            Founder-Ācārya of the International Society for Krishna Consciousness.
-          </div>
+          <div>Hare Krishna Hare Krishna Krishna Krishna Hare Hare<br>
+          Hare Rama Hare Rama Rama Rama Hare Hare</div>
         </footer>
       </div>
 
-      <aside class="right">
+      <aside class="right" aria-hidden="true">
         <div class="preview">
-          <img src="/poster.jpg" alt="Vrajakatha Poster" loading="lazy">
+          <a href="/poster.jpg" target="_blank" rel="noopener">
+            <img src="/poster.jpg" alt="Vrajakatha Poster" loading="lazy">
+          </a>
         </div>
       </aside>
     </section>
